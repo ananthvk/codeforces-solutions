@@ -69,8 +69,10 @@ def get_problem_json(info: typing.Dict):
         "info": info,
     }
 
+
 def get_solution_path(contest_id, problem_index):
-    return pathlib.Path('codeforces') / pathlib.Path(f'{contest_id}{problem_index}')
+    return pathlib.Path('src') / pathlib.Path(f"{contest_id}{problem_index}")
+
 
 class Action:
     def __init__(self) -> None:
@@ -129,7 +131,7 @@ class CreateFolderAction(Action):
         self.path.resolve().mkdir(parents=True, exist_ok=True)
 
 
-class CopyFileContentAction(Action):
+class CopyFileAction(Action):
     def __init__(
         self,
         from_path: pathlib.Path | str,
@@ -165,7 +167,7 @@ class CopyFileContentAction(Action):
                 "ERROR: Could not copy file contents since the file already exists"
             )
 
-        CreateFolderAction(self.to_path).execute()
+        CreateFolderAction(self.to_path.parent).execute()
         shutil.copy(self.from_path, self.to_path)
 
 
@@ -291,7 +293,6 @@ Hacky hardcoded solution to make it work first
 
 
 def codeforces_generator(contest_id, problem_index):
-
     url = f"https://codeforces.com/contest/{contest_id}/problem/{problem_index}"
 
     solution_path = get_solution_path(contest_id, problem_index)
@@ -320,16 +321,38 @@ def codeforces_generator(contest_id, problem_index):
     info = parser.from_content(req.content)
     problem_json = get_problem_json(info)
 
+    from_path = pathlib.Path(__file__).parent.resolve() / pathlib.Path(
+        "default-template.cpp"
+    )
+    to_path = problem_json["source_file"]
+
     # Create the required files if it does not exist
     actions = [
-        CreateFileAction(problem_json["source_file"]),
+        CopyFileAction(from_path, to_path),
+        # CreateFileAction(problem_json["source_file"]),
         CreateFileAction("problem.json"),
     ]
+
     for action in actions:
         action.execute()
 
+    with open(to_path, "ab") as wf:
+        url2 = f"// {url}\n\n"
+        wf.write(
+            b"// This is the solution for the problem taken from https://codeforces.com\n"
+        )
+        wf.write(url2.encode("ascii"))
+
     with open("problem.json", "w") as prob_json:
         json.dump(problem_json, prob_json, sort_keys=True, indent=4)
+
+    os.system("export PATH=~/cf:$PATH:~/cf")
+    if sys.platform.startswith("linux"):
+        env = dict(
+            os.environ,
+            PATH=f"{os.environ.get('PATH', '')}:{os.path.expanduser('~/cf')}",
+        )
+        subprocess.run(os.environ.get("SHELL", "/usr/bin/sh"), shell=True, env=env)
 
 
 def codeforces_build() -> int:
