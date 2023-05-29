@@ -44,6 +44,14 @@ import subprocess
 
 file_safe = re.compile("[0-9a-zA-Z_]")  # 0 to 9, a to z and A to Z
 not_file_safe = re.compile("[^0-9a-zA-Z_]")  # 0 to 9, a to z and A to Z
+
+codeforces_contest_regex = re.compile(
+    "^https?:\/\/\w*\.\w*\/contest\/(\d+)\/problem\/(\w\d?)"
+)
+codeforces_problemset_regex = re.compile(
+    "^https?:\/\/\w*\.\w*\/problemset\/(\d+)\/(\w\d?)"
+)
+
 REQUEST_TIMEOUT = 30  # Number of seconds after which a HTTP requests times out
 
 
@@ -71,7 +79,7 @@ def get_problem_json(info: typing.Dict):
 
 
 def get_solution_path(contest_id, problem_index):
-    return pathlib.Path('src') / pathlib.Path(f"{contest_id}{problem_index}")
+    return pathlib.Path("src") / pathlib.Path(f"{contest_id}{problem_index}")
 
 
 class Action:
@@ -400,9 +408,7 @@ def codeforces_generator(contest_id, problem_index):
 
     with open(to_path, "ab") as wf:
         url2 = f"// {url}\n\n"
-        wf.write(
-            b"// This is the solution for the problem taken from https://codeforces.com\n"
-        )
+        wf.write(b"// This is the solution for the problem from codeforces\n")
         wf.write(url2.encode("ascii"))
 
     with open("problem.json", "w") as prob_json:
@@ -481,6 +487,9 @@ def usage_help():
     print(
         "cfgen <contest id> <problem index> Downloads the project information from codeforces.com and creates the problem.json"
     )
+    print(
+        "cfgen <url> Downloads the project information from codeforces.com and creates the problem.json"
+    )
 
 
 def main():
@@ -497,6 +506,22 @@ def main():
             case default:
                 usage_help()
 
+    elif len(sys.argv) == 3:
+        match sys.argv[1]:
+            case "cfgen":
+                url = sys.argv[2]
+                if codeforces_contest_regex.match(url) is not None:
+                    m = codeforces_contest_regex.findall(url)
+                    codeforces_generator(m[0][0], m[0][1])
+
+                elif codeforces_problemset_regex.match(url) is not None:
+                    m = codeforces_problemset_regex.findall(url)
+                    codeforces_generator(m[0][0], m[0][1])
+                else:
+                    print("Invalid url, Please enter a valid codeforces url")
+                    usage_help()
+            case default:
+                usage_help()
     elif len(sys.argv) == 4:
         match sys.argv[1]:
             case "cfgen":
