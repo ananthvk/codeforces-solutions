@@ -171,11 +171,12 @@ class CopyFileAction(Action):
         shutil.copy(self.from_path, self.to_path)
 
 
-class CodeforcesProblemParser:
+class CodeforcesProblemParserAll:
     """
     A class for parsing codeforces problem statements
     This makes use of the convenient class attributes in div to extract the required information.
     So this parser can break if the site is updated.
+    This extracts all the information such as problem statement, output, input, etc
     """
 
     def __init__(self) -> None:
@@ -232,6 +233,67 @@ class CodeforcesProblemParser:
             div = problem.select(".note")
             if div is not None:
                 problem_info["notes"] = [i.get_text() for i in div]
+        except:
+            pass
+
+        try:
+            problem_url = soup.select(
+                "#pageContent > div.second-level-menu > ul > li.current.selectedLava > a"
+            )[0]
+
+            contest_id = [i for i in problem_url.attrs["href"].split("/") if i.strip()][
+                -1
+            ]
+            problem_info["id"] = contest_id
+
+            title_string = problem.find("div", {"class": "title"}).text
+            contents = [i for i in title_string.split(".")]
+            problem_info["index"] = contents[0].strip()
+
+            file_name = "".join(contents[1:])
+            file_prefix = f'{problem_info["id"]}{problem_info["index"]}_'
+            problem_info["filename"] = re.sub(not_file_safe, "", file_prefix) + re.sub(
+                not_file_safe, "", file_name
+            )
+
+            contents = [i.strip() for i in contents]
+            problem_info["name"] = " ".join(contents[1:]).strip()
+
+            problem_info[
+                "url"
+            ] = f'https://codeforces.com{problem_url["href"]}/problem/{problem_info["index"]}'
+        except:
+            pass
+
+        return problem_info
+
+
+class CodeforcesProblemParser:
+    """
+    A class for parsing codeforces problem statements
+    This makes use of the convenient class attributes in div to extract the required information.
+    So this parser can break if the site is updated.
+    This is a stripped down version of the CodeforcesProblemParserAll
+    """
+
+    def __init__(self) -> None:
+        pass
+
+    def from_html(self, path: str | pathlib.Path) -> typing.Dict:
+        with open(path, "rb") as fil:
+            return self.from_content(fil.read())
+
+    def from_content(self, html_content: str | bytes) -> typing.Dict:
+        problem_info = {
+            "url": "",
+            "name": "",
+            "filename": "",
+            "id": "",
+            "index": "",
+        }
+        soup = BeautifulSoup(html_content, features="html.parser")
+        try:
+            problem = soup.select(".problem-statement")[0]
         except:
             pass
 
