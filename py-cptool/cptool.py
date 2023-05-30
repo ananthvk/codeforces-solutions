@@ -79,7 +79,7 @@ def get_problem_json(info: typing.Dict):
 
 
 def get_solution_path(contest_id, problem_index):
-    return pathlib.Path("src") / pathlib.Path(f"{contest_id}{problem_index}")
+    return pathlib.Path("cf") / pathlib.Path(f"{contest_id}{problem_index}")
 
 
 class Action:
