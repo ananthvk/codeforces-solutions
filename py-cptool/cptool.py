@@ -49,7 +49,7 @@ codeforces_contest_regex = re.compile(
     "^https?:\/\/\w*\.\w*\/contest\/(\d+)\/problem\/(\w\d?)"
 )
 codeforces_problemset_regex = re.compile(
-    "^https?:\/\/\w*\.\w*\/problemset\/(\d+)\/(\w\d?)"
+    "^https?:\/\/\w*\.\w*\/problemset\/problem\/(\d+)\/(\w\d?)"
 )
 
 REQUEST_TIMEOUT = 30  # Number of seconds after which a HTTP requests times out
@@ -75,6 +75,10 @@ def get_problem_json(info: typing.Dict):
             "-ftrapv",
         ],
         "info": info,
+        # Set environment variables here
+        "env": {
+            "ASAN_OPTIONS": "strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:detect_leaks=1"
+        },
     }
 
 
@@ -472,7 +476,10 @@ def codeforces_execute():
 
     print(f"Executing {op_exe[2:]} ...", file=sys.stderr)
 
-    exit_code = subprocess.run([op_exe], shell=False)
+    env = dict(os.environ)
+    for k,v in problem_json.get("env",{}).items():
+        env[k] = v
+    exit_code = subprocess.run([op_exe], shell=False, env=env)
 
 
 def usage_help():
