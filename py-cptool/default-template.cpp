@@ -1,3 +1,4 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
 #include <iostream>
@@ -12,6 +13,13 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
@@ -57,6 +65,10 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
+
 int main()
 {
     FAST_IO

@@ -1,9 +1,6 @@
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -60,53 +57,85 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
-{
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
+/*
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll ntests = readn();
+    FORN(i, ntests)
+    {
+        ll n = readn();
+        auto v = readvin(n);
+        // 1 is guaranteed to exist in the sequence
+        auto pos1 = find(v.begin(), v.end(), 1);
+        auto posn = find(v.begin(), v.end(), n);
+        // Find the smallest element next to 1
+        ll a = MAXVAL(ll);
+        ll b = MAXVAL(ll);
+        if (pos1 + 1 != v.end())
+        {
+            a = *(pos1 + 1);
+        }
+        if (pos1 != v.begin())
+        {
+            b = *(pos1 - 1);
+        }
+        ll minv = min(a, b);
+
+        if (posn == pos1 + 1 && pos1 == v.begin())
+        {
+        }
+        else if (posn == pos1 + 1 || (pos1 != v.begin() && (pos1 - 1) == posn))
+        {
+            // Largest element is already adjacent to this element
+            // Take the next largest element
+            posn = find(v.begin(), v.end(), n - 1);
+        }
+        if (minv == a)
+        {
+            // Swap position of 1 + 1 with position of n
+            println(posn - v.begin() + 1, " ", pos1 - v.begin() + 1 + 1);
+        }
+        else
+        {
+            println(posn - v.begin() + 1, " ", pos1 - v.begin() - 1 + 1);
+        }
+    }
+    return 0;
+}
+*/
+
+int main()
+{
+    FAST_IO
+    ll ntests = readn();
+    FORN(nt, ntests)
+    {
+        ll n = readn();
+        auto v = readvin(n);
+        // Find the position of the largest element
+        auto posn = find(all(v), n);
+        auto pos1 = find(all(v), 1);
+        auto pos2 = find(all(v), 2);
+        long a, b;
+
+        if ((pos1 < posn && pos2 > posn) || (pos2 < posn && pos1 > posn))
+        {
+            a = pos1 - v.begin() + 1;
+            b = pos2 - v.begin() + 1;
+        }
+        else if (pos1 > posn && pos2 > posn)
+        {
+            a = min(pos1 - v.begin(), pos2 - v.begin()) + 1;
+            b = posn - v.begin() + 1;
+        }
+        else{
+            a = max(pos1 - v.begin(), pos2 - v.begin()) + 1;
+            b = posn - v.begin() + 1;
+        }
+        println(a, " ", b);
+    }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/1838/problem/B

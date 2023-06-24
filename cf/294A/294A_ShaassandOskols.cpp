@@ -1,9 +1,8 @@
 #include <algorithm>
-#include <deque>
-#include <map>
-#include <iostream>
+#include <fstream>
 #include <iterator>
-#include <istream>
+#include <deque>
+#include <iostream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -60,53 +59,25 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
-{
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll n = readn();
+    auto a = readvin(n);
+    ll m = readn();
+    FORN(i, m)
+    {
+        ll x = readn();
+        ll y = readn();
+        // Add the birds to the left to i-1
+        if ((x - 1) >= 1)
+            a[x - 1 - 1] += y - 1;
+        if ((x + 1) <= n)
+            a[x - 1 + 1] += a[x - 1] - y;
+        a[x - 1] = 0;
+    }
+    copy(a.begin(), a.end(), std::ostream_iterator<ll>(cout, "\n"));
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/294/problem/A

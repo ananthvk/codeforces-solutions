@@ -1,9 +1,7 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -15,6 +13,13 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
@@ -60,53 +65,44 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
 
-void solution(const std::string &s)
-{
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll n = readn();
+    auto v = readvin(n);
+    ll current_height = 0;
+    ll time_elapsed = 0;
+    // Algorithm
+    // for i = 0 to n - 1
+    //    move to the top of the tree
+    //    eat the nut
+    //    if n is not the last tree
+    //        if h_i > h_i+1
+    //             climb down to h_i+1
+    //        jump to the next tree
+    FORN(i, n)
+    {
+        time_elapsed += v[i] - current_height;
+        current_height = v[i];
+
+        time_elapsed += 1;
+
+        if (i != (n - 1))
+        {
+            if (v[i] > v[i + 1])
+            {
+                time_elapsed += v[i] - v[i + 1];
+                current_height = v[i + 1];
+            }
+            time_elapsed += 1;
+        }
+    }
+    println(time_elapsed);
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/265/problem/B

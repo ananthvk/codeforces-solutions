@@ -1,9 +1,7 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -60,53 +58,35 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
-{
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+
+    // Seems like a greedy problem to me
+    ll n = readn();
+    ll m = readn();
+    vector<pair<ll, ll>> contents;
+    contents.reserve(m);
+    FORN(i, m)
+    {
+        ll a = readn();
+        ll b = readn();
+        contents.push_back(mp(a, b));
+    }
+    std::sort(contents.begin(), contents.end(), [](auto &l, auto &r)
+              { return l.second > r.second; });
+
+    ll max_matches = 0;
+    for (const auto &val : contents)
+    {
+        ll avail = min(n, val.first);
+        max_matches += avail * val.second;
+        n -= avail;
+        if(n < 0)   
+            break;
+    }
+    println(max_matches);
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/16/problem/B

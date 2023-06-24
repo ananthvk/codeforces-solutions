@@ -1,9 +1,9 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
+#include <string.h>
+#include <numeric>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -15,6 +15,13 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
@@ -60,53 +67,84 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
+int main()
 {
-    map<char, ll> counts;
-    for (const auto &ch : s)
+    ll n = readn();
+    ll x0 = readn();
+    vector<ll> segments(1001, 0);
+    vector<ll> cumulative(1001, 0);
+    ll cuml = 0;
+    ll x = x0;
+    ll soln1 = -1;
+    ll soln2 = -1;
+
+    FORN(i, n)
     {
-        ++counts[ch];
+        ll a = readn();
+        ll b = readn();
+        ll t = std::min(a, b);
+        ll u = std::max(a, b);
+        a = t;
+        b = u;
+        segments[a] += 1;
+        if (b != 1000)
+            segments[b + 1] -= 1;
     }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
+
+    FORN(i, 1001)
     {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
+        cuml += segments[i];
+        cumulative[i] = cuml;
     }
-    if (turns % 2 == 0)
+    // println(cumulative);
+
+    while (x <= 1000 && cumulative[x] != n)
     {
-        println("First");
+        ++x;
+    }
+    if (x > 1000)
+    {
+        soln1 = -1;
     }
     else
     {
-        println("Second");
+        soln1 = x - x0;
+    }
+    if (soln1 == -1)
+    {
+        x = x0;
+        while (x >= 0 && cumulative[x] != n)
+        {
+            --x;
+        }
+        if (x < 0)
+        {
+            soln2 = -1;
+        }
+        else
+        {
+            soln2 = x0 - x;
+        }
+        if (soln2 == -1)
+        {
+            println(-1);
+        }
+        else
+        {
+            if (soln1 == -1)
+            {
+                println(soln2);
+            }
+            else
+            {
+                println(std::min(soln1, soln2));
+            }
+        }
+    }
+    else
+    {
+        println(soln1);
     }
 }
-int main()
-{
-    FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
-    return 0;
-}
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/14/problem/B

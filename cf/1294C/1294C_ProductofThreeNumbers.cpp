@@ -67,63 +67,33 @@ int main()
 {
     FAST_IO
     ll ntests = readn();
-    FORN(i, ntests)
+    FORN(ntt, ntests)
     {
         ll n = readn();
-        // Get all divisors of n <= sqrt(n)
-        vi divs;
-        divs.reserve(100);
+        // Get the least divisor of n
         ll sq = std::sqrt(n);
-        // Running time for this operation is O(sqrt(n))
-        FORS(i, 2, n+1, 1)
+        FORS(i, 2, sq + 1, 1)
         {
             if (n % i == 0)
             {
-                divs.push_back(i);
-            }
-        }
-        //println(sq);
-        //println(divs);
-        if (divs.size() < 3)
-        {
-            println("NO");
-        }
-        else
-        {
-            ll n_divisors = divs.size();
-            // Running time of this operation is O(sqrt(n) * 2n)
-            ll flag = 0;
-            FORN(i, n_divisors)
-            {
-                flag = 0;
-                ll num = n / divs[i];
-                // Check if there are 2 numbers a and b such that their product is num
-                map<ll, ll> prodmap; // Contains a map where prodmap[num/ele] = ele
-                // So this actually checks if there is a number num/ele
-                for (const auto &a : divs)
+                ll other_part = n / i;
+                ll sqo = std::sqrt(other_part);
+                FORS(j, 2, sqo + 1, 1)
                 {
-                    ll complement = num / a;
-                    if (prodmap.find(a) != prodmap.end())
+                    if (j != i && (other_part) % j == 0 && (other_part / j != 1) && (n/(i*j) != i) && (n/(i*j) != j) && (n/(i*j) != 1))
                     {
-                        ll b = prodmap[a];
-                        if (a != divs[i] && b != divs[i])
-                        {
-                            flag = 1;
-                            println("YES");
-                            println(divs[i], " ", a, " ", b);
-                            break;
-                        }
+                        println("YES");
+                        println(i, " ", j, " ", n / (i * j));
+                        goto done;
                     }
-                    prodmap[complement] = a;
                 }
-                if (flag)
-                    break;
-            }
-            if (!flag)
-            {
-                println("NO");
             }
         }
+        goto not_done;
+    not_done:
+        println("NO");
+    done:;
+
     }
     return 0;
 }

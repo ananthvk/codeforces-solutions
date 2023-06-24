@@ -1,9 +1,7 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -15,6 +13,13 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
@@ -60,53 +65,52 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
+struct spec
 {
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
+    ll speed;
+    ll ram;
+    ll hdd;
+    ll cost;
+    ll id;
+    bool outdated;
+};
+
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll n = readn();
+    vector<spec> specs;
+    specs.reserve(n);
+    FORN(sn, n)
+    {
+        spec s;
+        s.speed = readn();
+        s.ram = readn();
+        s.hdd = readn();
+        s.cost = readn();
+        s.id = sn + 1;
+        s.outdated = false;
+        specs.push_back(s);
+    }
+    // n^2 is acceptable since n <= 100, so 10^4
+    for (auto &test_spec : specs)
+    {
+        for (const auto &other : specs)
+        {
+            if (test_spec.speed < other.speed && test_spec.ram < other.ram && test_spec.hdd < other.hdd)
+            {
+                test_spec.outdated = true;
+            }
+        }
+    }
+    vector<spec> valid;
+    // Remove copy if copies elements for which the predicate returns false
+    remove_copy_if(specs.begin(), specs.end(), back_inserter(valid), [](const spec &s)
+                   { return s.outdated; });
+    sort(valid.begin(), valid.end(), [](const spec &l, const spec &r)
+         { return l.cost < r.cost; });
+    println(valid.front().id);
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/106/problem/B

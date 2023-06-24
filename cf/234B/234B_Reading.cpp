@@ -1,21 +1,34 @@
-#include <algorithm>
-#include <deque>
-#include <map>
+// https://github.com/ananthvk/codeforces-solutions
+#include <stdint.h>
+#include <math.h>
+#include <limits>
 #include <iostream>
 #include <iterator>
-#include <istream>
-#include <limits>
+#include <numeric>
+#include <algorithm>
 #include <string>
+#include <list>
+#include <map>
+#include <deque>
 #include <tuple>
 #include <vector>
-#include <stdint.h>
 using namespace std;
 
 // clang-format off
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
 #define mp make_pair
 #define mt make_tuple
 // Looping construct macros
@@ -61,52 +74,37 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
-void solution(const std::string &s)
+struct rec
 {
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
+    ll value;
+    ll id;
+};
+std::istream &operator>>(std::istream &is, rec &r)
+{
+    static ll counter = 1;
+    is >> r.value;
+    r.id = counter;
+    counter += 1;
+    return is;
 }
+
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    FILE_IO
+    ll n = readn();
+    ll h = readn();
+    auto v = readv<rec>(n);
+    sort(all(v), [](const rec &l, const rec &r)
+         { return l.value < r.value; });
+    ll N = v.size();
+    println(v[N - h].value);
+    FORS(i, N - h, N, 1)
+    {
+        print(v[i].id, " ");
+    }
+    println("");
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/234/problem/B

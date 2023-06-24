@@ -1,9 +1,7 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -60,53 +58,37 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
-{
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
-}
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll n = readn();
+    ll a = readn();
+    ll catches = 0;
+    ll i = a - 1 - 1;
+    ll j = a + 1 - 1;
+    auto c = readvin(n);
+    while (i >= 0 and j < n)
+    {
+        if (c[i] == c[j] and c[i] == 1)
+            catches += 2;
+        --i;
+        ++j;
+    }
+    // invariant: either or both of i and j are one past the limit
+    if (i == -1)
+    {
+        while (j < n)
+            catches += c[j++];
+    }
+    if (j == n)
+    {
+        while (i >= 0)
+            catches += c[i--];
+    }
+    // check if there is a criminal in the starting city
+    catches += c[a - 1];
+    println(catches);
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/680/problem/B

@@ -1,9 +1,11 @@
-#include <algorithm>
-#include <deque>
-#include <map>
-#include <iostream>
+// https://github.com/ananthvk/codeforces-solutions
 #include <iterator>
-#include <istream>
+#include <algorithm>
+#include <set>
+#include <deque>
+#include <queue>
+#include <list>
+#include <iostream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -15,6 +17,13 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
+/*
+#ifdef ONLINE_JUDGE
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
+#else
+#define FAST_IO {}
+#endif
+*/
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
@@ -60,53 +69,72 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
+ll bfs(const vector<list<ll>> &graph, ll vertex)
 {
-    map<char, ll> counts;
-    for (const auto &ch : s)
+    ll leaves = 0;
+    deque<ll> qu;
+    qu.push_back(vertex);
+    if (graph[vertex].size() == 1)
     {
-        ++counts[ch];
+        return 1;
     }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
+    while (!qu.empty())
     {
-        if (record.second % 2 != 0)
+        ll v = qu.front();
+        qu.pop_front();
+        println(vertex, "::", v);
+        copy(graph[v].begin(), graph[v].end(), ostream_iterator<ll>(cout, " "));
+        println("\n");
+        for (const auto &adj : graph[v])
         {
-            if (first_odd && string_length % 2 != 0)
+            if (adj > v)
             {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
+                if (graph[adj].size() == 1)
+                {
+                    leaves += 1;
+                }
+                else
+                {
+                    qu.push_back(adj);
+                }
             }
         }
+        // println(">>>>> ", v);
+        // copy(graph[v].begin(), graph[v].end(), ostream_iterator<ll>(cout, " "));
+        // println("\n<<<<<<");
     }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
+    println("LEaves: ", leaves);
+    return leaves;
 }
+
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll ntests = readn();
+    FORN(nt, ntests)
+    {
+        ll n = readn();
+        vector<list<ll>> adjrepr(n + 1);
+        FORN(i, (n - 1))
+        {
+            ll u = readn();
+            ll v = readn();
+            adjrepr[u].push_back(v);
+            adjrepr[v].push_back(u);
+        }
+        ll nqueries = readn();
+        FORN(nq, nqueries)
+        {
+            ll x = readn();
+            ll y = readn();
+            println("Solution for ", x, " ", y);
+            println("############");
+            println(x, ": ", bfs(adjrepr, x), " ", y, ": ", bfs(adjrepr, y));
+            println("*#*#*#*#*");
+        }
+        println("----");
+    }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/1843/problem/D

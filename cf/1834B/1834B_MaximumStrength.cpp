@@ -1,9 +1,7 @@
+// https://github.com/ananthvk/codeforces-solutions
 #include <algorithm>
 #include <deque>
-#include <map>
 #include <iostream>
-#include <iterator>
-#include <istream>
 #include <limits>
 #include <string>
 #include <tuple>
@@ -60,53 +58,63 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
-void solution(const std::string &s)
+const string zfill(const string &s, int num_zeros)
 {
-    map<char, ll> counts;
-    for (const auto &ch : s)
-    {
-        ++counts[ch];
-    }
-    ll string_length = s.size();
-    ll turns = 0;
-    bool first_odd = true;
-    for (const auto &record : counts)
-    {
-        if (record.second % 2 != 0)
-        {
-            if (first_odd && string_length % 2 != 0)
-            {
-                // First character which has odd occurences and the string length is also odd
-                // do nothing
-                first_odd = false;
-            }
-            else
-            {
-                // One turn is used to remove a character
-                ++turns;
-                --string_length;
-            }
-        }
-    }
-    if (turns % 2 == 0)
-    {
-        println("First");
-    }
-    else
-    {
-        println("Second");
-    }
+    return string(num_zeros, '0').append(s);
 }
 int main()
 {
     FAST_IO
-    // auto s = reads();
-    // solution(s);
-    vector<int> v;
-    copy(istream_iterator<int>(cin), istream_iterator<int>(), back_inserter(v));
-    copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+    ll ntests = readn();
+    FORN(nt, ntests)
+    {
+        auto L = reads();
+        auto R = reads();
+        ll num_zeros = std::max(std::abs((ll)L.size() - (ll)R.size()), (ll)0);
+        if (L.size() < R.size())
+        {
+            L = zfill(L, num_zeros);
+        }
+        else if (R.size() < L.size())
+        {
+            R = zfill(R, num_zeros);
+        }
+        ll max_strength = 0;
+        FORN(i, num_zeros)
+        {
+            max_strength += std::abs(L[i] - R[i]);
+        }
+        ll N = R.size();
+        if (num_zeros > 0)
+        {
+            max_strength += (N - num_zeros) * 9;
+        }
+        else
+        {
+            ll i = 0;
+            while (i < N && L[i] == R[i])
+                ++i;
+            // For the digit immediately after the repeating digits, normal abs sub
+            // println("*", i);
+            if (i < N)
+            {
+                max_strength += std::abs(R[i] - L[i]);
+                max_strength += (N - (i + 1)) * 9;
+            }
+            /*
+            max_strength += (N - i) * 9;
+            println("*", i);
+            FORN(k, i)
+            {
+                max_strength += std::abs(R[k] - L[k]);
+            }
+            */
+        }
+        // println(L, " ", R, ": ", max_strength);
+        // println("-----");
+        println(max_strength);
+    }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/276/problem/B
+// https://codeforces.com/contest/1834/problem/B

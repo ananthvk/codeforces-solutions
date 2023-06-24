@@ -64,15 +64,26 @@ def get_problem_json(info: typing.Dict):
         "args": [
             "-W",
             "-Wall",
+            # Some tips taken from here https://codeforces.com/blog/entry/15547
+            "-Wformat=2",
+            "-Wfloat-equal",
+            "-Wlogical-op",
+            "-Wshift-overflow=2",
             "-Wextra",
+            "-Wconversion",
+            "-Wsign-conversion",
+            "-Wcast-align",
             "-pedantic",
             "-gdwarf-4",
-            "-O0",
+            "-O2",
             "-fsanitize=integer,address,undefined,integer-divide-by-zero,shift,null,return,signed-integer-overflow,float-divide-by-zero,float-cast-overflow,bounds,alignment,vptr,leak",
             "-pedantic",
-            "-Wno-sign-conversion",
             "-Wno-sign-compare",
             "-ftrapv",
+            "-D_GLIBCXX_DEBUG",
+            "-D_GLIBCXX_DEBUG_PEDANTIC",
+            "-D_FORTIFY_SOURCE=2",
+            "-fstack-protector"
         ],
         "info": info,
         # Set environment variables here
@@ -425,7 +436,7 @@ def codeforces_generator(contest_id, problem_index):
             PATH=f"{os.environ.get('PATH', '')}:{os.path.expanduser('~/cf')}",
         )
         subprocess.run(os.environ.get("SHELL", "/usr/bin/sh"), shell=True, env=env)
-
+        os.system('code *.cpp')
 
 def codeforces_build() -> int:
     if not os.path.exists("problem.json"):
@@ -477,7 +488,7 @@ def codeforces_execute():
     print(f"Executing {op_exe[2:]} ...", file=sys.stderr)
 
     env = dict(os.environ)
-    for k,v in problem_json.get("env",{}).items():
+    for k, v in problem_json.get("env", {}).items():
         env[k] = v
     exit_code = subprocess.run([op_exe], shell=False, env=env)
 
