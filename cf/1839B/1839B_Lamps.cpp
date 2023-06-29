@@ -1,37 +1,29 @@
 // https://github.com/ananthvk/codeforces-solutions
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
-#pragma GCC diagnostic warning "-Wunknown-pragmas"
-#define FAST_IO_ENABLED
-// https://codeforces.com/blog/entry/96344
+// https://codeforces.com/blog/entry/96344 
 #include <algorithm>
-#include <chrono>
 #include <deque>
 #include <iostream>
-#include <iterator>
 #include <limits>
-#include <math.h>
-#include <map>
-#include <numeric>
-#include <set>
-#include <stdint.h>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stdint.h>
 using namespace std;
 
 // clang-format off
-#pragma GCC diagnostic ignored "-Wsign-conversion"
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
-#ifdef FAST_IO_ENABLED
+/*
+#ifdef ONLINE_JUDGE
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #else
 #define FAST_IO {}
 #endif
-#define FILE_IO freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+*/
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
 // Looping construct macros
@@ -73,19 +65,44 @@ template <typename T> void dprint(T v1) { cerr << v1; } template <typename T> vo
 #else
 template <typename T> void dprint(T v1) { } template <typename T> void dprintln(T v1) {} template <typename T, typename... Args> void dprint(T v1, Args... v2) {} template <typename T, typename... Args> void dprintln(T v1, Args... v2) {}
 #endif
-// https://codeforces.com/blog/entry/62393
-// http://xorshift.di.unimi.it/splitmix64.c
-struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7c15; x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9; x = (x ^ (x >> 27)) * 0x94d049bb133111eb; return x ^ (x >> 31); } size_t operator()(uint64_t x) const { static const uint64_t RND = chrono::steady_clock::now().time_since_epoch().count(); return splitmix64(x + RND); } };
-#define unordered_map do_not_use_directly_if_integer_unordered_map
-#include<unordered_map>
-#undef unordered_map
-#pragma GCC diagnostic warning "-Wsign-conversion"
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
 
+enum lamp_state{
+    STATE_BROKEN,
+    STATE_OFF,
+    STATE_ON
+};
+struct lamp{
+    ll id;
+    ll a;
+    ll b;
+    lamp_state state;
+};
 int main()
 {
     FAST_IO
+    // Pseudocode
+    // while there are no lamps which are off
+    //    Choose the best lamp, which is the lamp with least a_i and
+    //    maximum b_i and is not broken
+    //    Break all lamps which have value less than or equal to x
+    ll ntests = readn();
+    FORN(i, ntests){
+        ll n = readn();
+        FORN(i, n){
+            ll a = readn();
+            ll b = readn();
+            lamp l = {i+1, a, b, STATE_ON};
+        }
+    }
+
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/1839/problem/B
+

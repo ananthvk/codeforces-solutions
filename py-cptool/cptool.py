@@ -66,9 +66,10 @@ def get_problem_json(info: typing.Dict):
             "-Wall",
             # Some tips taken from here https://codeforces.com/blog/entry/15547
             "-Wformat=2",
+            "-Wshadow",
+            #"-Wduplicated-cond",
             "-Wfloat-equal",
-            "-Wlogical-op",
-            "-Wshift-overflow=2",
+            "-Wshift-overflow",
             "-Wextra",
             "-Wconversion",
             "-Wsign-conversion",
@@ -553,3 +554,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# TODO: Support test cases by reading them from comments in the source file

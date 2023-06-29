@@ -84,8 +84,47 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
+struct segment
+{
+    ll l;
+    ll r;
+    ll id;
+};
 int main()
 {
+    // Solution:
+    // Find the minimum among all the left intervals
+    // Find the maximum among all the right intervals
+    // If there is an interval whose left endpoint is <= min_l and
+    // whose right endpoint is >= max_r, that is the solution
     FAST_IO
+    ll n = readn();
+    vector<segment> segments;
+    segments.reserve(n);
+    ll min_l = MAXVAL(ll);
+    ll max_r = MINVAL(ll);
+    FORN(i, n)
+    {
+        segment s;
+        s.l = readn();
+        if (s.l < min_l)
+            min_l = s.l;
+        s.r = readn();
+        if (s.r > max_r)
+            max_r = s.r;
+        s.id = i + 1;
+        segments.push_back(s);
+    }
+    for (const auto &segment : segments)
+    {
+        if (segment.l <= min_l && segment.r >= max_r)
+        {
+            println(segment.id);
+            return 0;
+        }
+    }
+    println(-1);
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/242/problem/B

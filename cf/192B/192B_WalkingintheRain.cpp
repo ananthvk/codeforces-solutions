@@ -83,9 +83,42 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+bool path_exists(const vector<ll> &v)
+{
+    // The path does not exist(for the next day) if either tile 1 or tile n is destroyed
+    // Or there are two consecutive negative numbers
+    if (v.empty())
+        return false;
+    if (v.back() == 0 || v.front() == 0)
+        return false;
+    ll prev = v.front();
+    for (const auto &elem : v)
+    {
+        if (elem <= 0 && prev <= 0)
+            return false;
+        prev = elem;
+    }
+    return true;
+}
 
 int main()
 {
     FAST_IO
+    // Bruteforce O(n^2) solution works here because n <= 10^3, ai <= 10^3
+    ll n = readn();
+    vector<ll> v = readvin(n);
+    ll days = 0;
+    while (path_exists(v))
+    {
+        // rain
+        for (auto &elem : v)
+        {
+            --elem;
+        }
+        ++days;
+    }
+    println(days);
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/192/problem/B

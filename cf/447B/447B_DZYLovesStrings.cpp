@@ -72,8 +72,21 @@ template <typename T> void dprint(T v1) { } template <typename T> void dprintln(
 int main()
 {
     FAST_IO
+    auto s = reads();
+    auto k = readn();
+    auto vals = readvin(26);
+    ll fx = 0;
+    FORN(i, s.size())
+    {
+        fx += (i + 1) * vals[s[i] - 'a'];
+    }
+    ll maxv = *max_element(vals.begin(), vals.end());
+    FORN(i, k)
+    {
+        fx += (i + 1 + s.size()) * maxv;
+    }
+    println(fx);
     return 0;
 }
 // This is the solution for the problem from codeforces
 // https://codeforces.com/contest/447/problem/B
-

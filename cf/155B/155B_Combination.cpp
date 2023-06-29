@@ -6,19 +6,14 @@
 #define FAST_IO_ENABLED
 // https://codeforces.com/blog/entry/96344
 #include <algorithm>
-#include <chrono>
 #include <deque>
 #include <iostream>
-#include <iterator>
+#include <chrono>
 #include <limits>
-#include <math.h>
-#include <map>
-#include <numeric>
-#include <set>
-#include <stdint.h>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stdint.h>
 using namespace std;
 
 // clang-format off
@@ -83,9 +78,53 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
+struct card
+{
+    ll a;
+    ll b;
+};
+struct card_cmp_a
+{
+    bool operator()(const card &c1, const card &c2)
+    {
+        return c1.a < c2.a;
+    }
+};
+struct card_cmp_b
+{
+    bool operator()(const card &c1, const card &c2)
+    {
+        return c1.b < c2.b;
+    }
+};
 int main()
 {
     FAST_IO
+    ll n = readn();
+    vector<card> cards;
+    cards.reserve(n);
+    FORN(i, n)
+    {
+        card c;
+        c.a = readn();
+        c.b = readn();
+        cards.push_back(c);
+    }
+    sort(all(cards), card_cmp_a());
+    stable_sort(all(cards), card_cmp_b());
+    // Greedy technique
+    ll moves = 1;
+    ll i = cards.size() - 1;
+    ll points = 0;
+    while (moves > 0 && i >= 0)
+    {
+        points += cards[i].a;
+        --moves;
+        moves += cards[i].b;
+        --i;
+    }
+    println(points);
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/155/problem/B

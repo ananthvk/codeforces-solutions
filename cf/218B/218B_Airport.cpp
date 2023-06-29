@@ -87,5 +87,68 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 int main()
 {
     FAST_IO
+    ll n = readn(); // number of passengers
+    ll m = readn(); // number of planes
+    ll minimized = 0;
+    ll maximized = 0;
+    auto planes = readvin(m);
+    sort(all(planes));
+    // Minimize
+    ll tn = n;
+    ll i = 0;
+    dprintln(planes);
+    // Finding the minimum is O(n)
+    while (tn != 0 && i < m)
+    {
+        if (tn >= planes[i])
+        {
+            // Uses sum of natural numbers formula to calculate 6 + 5 + 4 + 3 ..... 1
+            // Which are the fares for the plane.
+            dprintln("[b > ] m:", minimized, " tn:", tn, " pl[i]:", planes[i]);
+            tn -= planes[i];
+            minimized += (planes[i] * (planes[i] + 1)) / 2;
+            dprintln("[a > ] m:", minimized, " tn:", tn, " pl[i]:", planes[i]);
+        }
+        else
+        {
+            // sum of 1 + 2 + 3 .... planes[i]
+            dprintln("[b < ] m:", minimized, " tn:", tn, " pl[i]:", planes[i]);
+            minimized += (planes[i] * (planes[i] + 1)) / 2;
+            ll diff = planes[i] - tn;
+            // Here we also need to subtract, for example say a plane has 7 empty seats
+            // and there are 3 passengers, 4 seats are vacant
+            // The fare for all the seats is 
+            // 7 + 6 + 5 + 4 + 3 + 2 + 1 =
+            //             4 + 3 + 2 + 1 =
+            // So when we subtract, we get the sum of fares for the used seats
+            minimized -= (diff * (diff + 1)) / 2;
+            dprintln("[a < ] m:", minimized, " tn:", tn, " pl[i]:", planes[i]);
+            tn = 0;
+            break;
+        }
+        ++i;
+    }
+    // Use a max-heap to always get the plane with the maximum free seats
+    // and assign the passenger that seat
+    // (greedy)
+    make_heap(planes.begin(), planes.end());
+    // The running time is O(2nlogn)
+    while (n > 0 && planes.size() > 0)
+    {
+        pop_heap(planes.begin(), planes.end());
+        auto elem = planes.back();
+        maximized += elem;
+        --n;
+        planes.pop_back();
+        if (elem >= 1)
+        {
+            planes.push_back(elem - 1);
+            push_heap(planes.begin(), planes.end());
+        }
+    }
+    // Total running time O(n + 2nlogn)
+    println(maximized, " ", minimized);
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/218/problem/B

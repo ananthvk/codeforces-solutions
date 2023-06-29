@@ -3,22 +3,17 @@
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
 #pragma GCC diagnostic warning "-Wunknown-pragmas"
-#define FAST_IO_ENABLED
 // https://codeforces.com/blog/entry/96344
 #include <algorithm>
-#include <chrono>
+#include <map>
 #include <deque>
 #include <iostream>
-#include <iterator>
+#include <chrono>
 #include <limits>
-#include <math.h>
-#include <map>
-#include <numeric>
-#include <set>
-#include <stdint.h>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stdint.h>
 using namespace std;
 
 // clang-format off
@@ -26,12 +21,14 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
-#ifdef FAST_IO_ENABLED
+/*
+#ifdef ONLINE_JUDGE
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #else
 #define FAST_IO {}
 #endif
-#define FILE_IO freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+*/
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
 // Looping construct macros
@@ -83,9 +80,35 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
+
+#define POPULATE(start, charv) \
+    FORS(i, start, n + 1, 4)   \
+    {                          \
+        result[i - 1] = charv; \
+    }
 
 int main()
 {
+    // I guess the solution is as follows
+    // 1    5    9    13
+    //  2    6    10
+    //   3    7     11
+    //    4    8      12
+    // Create 4 arithmetic progression upto the desired length
+    // Then fill the first row with a's, 2nd one with b's, 3rd one with c's and so on
+    ll n = readn();
+    string result;
+    result.resize(n);
+    POPULATE(1, 'a');
+    POPULATE(2, 'b');
+    POPULATE(3, 'c');
+    POPULATE(4, 'd');
+    println(result);
     FAST_IO
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/110/problem/B

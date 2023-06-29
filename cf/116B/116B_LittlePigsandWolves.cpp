@@ -3,22 +3,16 @@
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
 #pragma GCC diagnostic warning "-Wunknown-pragmas"
-#define FAST_IO_ENABLED
 // https://codeforces.com/blog/entry/96344
 #include <algorithm>
-#include <chrono>
 #include <deque>
 #include <iostream>
-#include <iterator>
+#include <chrono>
 #include <limits>
-#include <math.h>
-#include <map>
-#include <numeric>
-#include <set>
-#include <stdint.h>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stdint.h>
 using namespace std;
 
 // clang-format off
@@ -26,12 +20,14 @@ using namespace std;
 typedef uint64_t ull;
 typedef int64_t ll;
 typedef struct {ll x; ll y;} pointi;
-#ifdef FAST_IO_ENABLED
+/*
+#ifdef ONLINE_JUDGE
 #define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #else
 #define FAST_IO {}
 #endif
-#define FILE_IO freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
+*/
+#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL);
 #define mp make_pair
 #define mt make_tuple
 // Looping construct macros
@@ -83,9 +79,52 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+#define FILE_IO                       \
+    freopen("input.txt", "r", stdin); \
+    freopen("output.txt", "w", stdout);
 
 int main()
 {
     FAST_IO
+    vector<string> pos;
+    ll n = readn();
+    ll m = readn();
+    ll eaten = 0;
+    pos.reserve(n);
+    FORN(i, n)
+    {
+        pos.push_back(reads());
+    }
+    FORN(i, n)
+    {
+        FORN(j, m)
+        {
+            if (pos[i][j] == 'W')
+            {
+                for (ll k = -1; k <= 1; k += 2)
+                {
+                    if (i + k >= 0 && i + k < n)
+                    {
+                        if (pos[i + k][j] == 'P')
+                        {
+                            ++eaten;
+                            break;
+                        }
+                    }
+                    if (j + k >= 0 && j + k < m)
+                    {
+                        if (pos[i][j + k] == 'P')
+                        {
+                            ++eaten;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    println(eaten);
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/116/problem/B

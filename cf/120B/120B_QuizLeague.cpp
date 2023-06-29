@@ -6,19 +6,14 @@
 #define FAST_IO_ENABLED
 // https://codeforces.com/blog/entry/96344
 #include <algorithm>
-#include <chrono>
 #include <deque>
 #include <iostream>
-#include <iterator>
+#include <chrono>
 #include <limits>
-#include <math.h>
-#include <map>
-#include <numeric>
-#include <set>
-#include <stdint.h>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stdint.h>
 using namespace std;
 
 // clang-format off
@@ -87,5 +82,28 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 int main()
 {
     FAST_IO
+    FILE_IO
+    ll n = readn();
+    ll k = readn();
+    auto v = readvin(n);
+    --k;
+    FORS(i, k, n, 1)
+    {
+        if (v[i] == 1)
+        {
+            println(i + 1);
+            return 0;
+        }
+    }
+    FORS(i, 0, k, 1)
+    {
+        if (v[i] == 1)
+        {
+            println(i + 1);
+            return 0;
+        }
+    }
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/120/problem/B

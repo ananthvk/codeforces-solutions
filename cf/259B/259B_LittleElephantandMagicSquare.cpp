@@ -1,4 +1,4 @@
-// https://github.com/ananthvk/codeforces-solutions
+// http://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -89,3 +89,6 @@ int main()
     FAST_IO
     return 0;
 }
+// This is the solution for the problem from codeforces
+// https://codeforces.com/contest/259/problem/B
+
