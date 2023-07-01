@@ -1,4 +1,4 @@
-// http://github.com/ananthvk/codeforces-solutions
+// https://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -87,30 +87,37 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 int main()
 {
     FAST_IO
-    ll da = readn(); // Principal diagonal
-    ll b = readn();
-    ll c = readn();
-    ll d = readn();
-    ll de = readn(); // Principal diagonal
-    ll f = readn();
-    ll g = readn();
-    ll h = readn();
-    ll di = readn(); // Principal diagonal
-    FORS(i, 0, 100000 + 1, 1)
+    ll ntests = readn();
+    FORN(nt, ntests)
     {
-        ll s = i + b + c;
-        da = i;
-        de = s - (d + f);
-        di = s - (g + h);
-        if ((da + de + di) == s && (da + d + g) == s && (b + de + h) == s && (c + f + di) == s)
+        ll ax = readn();
+        ll ay = readn();
+
+        ll bx = readn();
+        ll by = readn();
+
+        ll cx = readn();
+        ll cy = readn();
+
+        ll bx_diff = bx - ax;
+        ll by_diff = by - ay;
+
+        ll cx_diff = cx - ax;
+        ll cy_diff = cy - ay;
+
+        ll maxdist = 1;
+        if (bx_diff * cx_diff > 0)
         {
-            println(da, " ", b, " ", c);
-            println(d, " ", de, " ", f);
-            println(g, " ", h, " ", di);
-            return 0;
+            maxdist += min(abs(bx_diff), abs(cx_diff));
         }
+        if (by_diff * cy_diff > 0)
+        {
+            maxdist += min(abs(by_diff), abs(cy_diff));
+        }
+        println(maxdist);
     }
+
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/259/problem/B
+// https://codeforces.com/contest/1845/problem/B

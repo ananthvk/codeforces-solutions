@@ -1,4 +1,4 @@
-// http://github.com/ananthvk/codeforces-solutions
+// https://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -6,6 +6,7 @@
 #define FAST_IO_ENABLED
 // https://codeforces.com/blog/entry/96344
 #include <algorithm>
+#include <bitset>
 #include <chrono>
 #include <deque>
 #include <iostream>
@@ -83,34 +84,22 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-
 int main()
 {
     FAST_IO
-    ll da = readn(); // Principal diagonal
-    ll b = readn();
-    ll c = readn();
-    ll d = readn();
-    ll de = readn(); // Principal diagonal
-    ll f = readn();
-    ll g = readn();
-    ll h = readn();
-    ll di = readn(); // Principal diagonal
-    FORS(i, 0, 100000 + 1, 1)
+    ll n = readn();
+    ll m = readn();
+    ll k = readn();
+    vector<ll> bitcount = readvin(m + 1);
+    ll cnt = 0;
+    for (ll i = 0; i < m; i++)
     {
-        ll s = i + b + c;
-        da = i;
-        de = s - (d + f);
-        di = s - (g + h);
-        if ((da + de + di) == s && (da + d + g) == s && (b + de + h) == s && (c + f + di) == s)
+        if (__popcount((ull)bitcount[i] ^ (ull)bitcount[m]) <= k)
         {
-            println(da, " ", b, " ", c);
-            println(d, " ", de, " ", f);
-            println(g, " ", h, " ", di);
-            return 0;
+            ++cnt;
         }
     }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/259/problem/B
+// https://codeforces.com/contest/467/problem/B

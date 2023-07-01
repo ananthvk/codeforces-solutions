@@ -1,4 +1,4 @@
-// http://github.com/ananthvk/codeforces-solutions
+// https://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -87,30 +87,41 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 int main()
 {
     FAST_IO
-    ll da = readn(); // Principal diagonal
-    ll b = readn();
-    ll c = readn();
-    ll d = readn();
-    ll de = readn(); // Principal diagonal
-    ll f = readn();
-    ll g = readn();
-    ll h = readn();
-    ll di = readn(); // Principal diagonal
-    FORS(i, 0, 100000 + 1, 1)
+    // Observations
+    // The path can only be right and down
+    // There are n possible paths (since you can keep moving right, but go down only once)
+    // Cell (1, 1) and (2, n) should have the greatest possible numbers (since they will always be added)
+    // Fill all odd positions of the first row  and even positions of the second row in decreasing order
+    // Then for any path, they will always be summed, and the other positions subtracted
+    // The numbers range from 1 to 2n
+    // With 2n at (2, n) and 2n-1 at (1, 1)
+    // All other positions are filled accordingly
+    ll ntests = readn();
+    FORN(nt, ntests)
     {
-        ll s = i + b + c;
-        da = i;
-        de = s - (d + f);
-        di = s - (g + h);
-        if ((da + de + di) == s && (da + d + g) == s && (b + de + h) == s && (c + f + di) == s)
+        ll n = readn();
+        vector<ll> arr(n, 0);
+        ll e = n * 2;
+        for (ll i = 0; i < n; i += 2)
         {
-            println(da, " ", b, " ", c);
-            println(d, " ", de, " ", f);
-            println(g, " ", h, " ", di);
-            return 0;
+            // Fill odd positions
+            arr[i] = e - 1 - i;
+            // Fill even positions with odd numbers
+            if (i + 1 < n)
+                arr[i + 1] = 1 + i;
         }
+        println(arr);
+        for (ll i = n - 1; i >= 0; i -= 2)
+        {
+            arr[i] = e - (n - i - 1);
+            if (i - 1 >= 0)
+            {
+                arr[i - 1] = i - 1 + 2;
+            }
+        }
+        println(arr);
     }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/259/problem/B
+// https://codeforces.com/contest/1816/problem/B

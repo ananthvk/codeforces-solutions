@@ -1,4 +1,4 @@
-// http://github.com/ananthvk/codeforces-solutions
+// https://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -83,34 +83,81 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // clang-format on
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+void solution(ll n, ll k, ll x)
+{
+    if (k >= n && x != n)
+    {
+        println("YES");
+        println(1);
+        println(n);
+        return;
+    }
+    if (k == 1)
+    {
+        println("NO");
+        return;
+    }
+    if (x != 1)
+    {
+        println("YES");
+        println(n);
+        FORN(i, n)
+        {
+            print(1, " ");
+        }
+        println("");
+        return;
+    }
+    if (n % 2 == 0 && x != 2)
+    {
+        println("YES");
+        println(n / 2);
+        FORN(i, n / 2)
+        {
+            print(2, " ");
+        }
+        println("");
+        return;
+    }
+    if (n % 2 != 0)
+    {
+        // Choose a odd number <= k, not equal to x
+        ll k0 = k;
+        while (k0 % 2 == 0 && k0 != x)
+        {
+            --k0;
+        }
+        if (k0 <= 0 || k0 == x)
+        {
+            println("NO");
+            return;
+        }
+        n -= k0;
+        println("YES");
+        println((n / 2) + 1);
+        print(k0, " ");
+        FORN(i, n / 2)
+        {
+            print(2, " ");
+        }
+        println("");
+        return;
+    }
+    println("NO");
+}
 
 int main()
 {
     FAST_IO
-    ll da = readn(); // Principal diagonal
-    ll b = readn();
-    ll c = readn();
-    ll d = readn();
-    ll de = readn(); // Principal diagonal
-    ll f = readn();
-    ll g = readn();
-    ll h = readn();
-    ll di = readn(); // Principal diagonal
-    FORS(i, 0, 100000 + 1, 1)
+    ll ntests = readn();
+    FORN(i, ntests)
     {
-        ll s = i + b + c;
-        da = i;
-        de = s - (d + f);
-        di = s - (g + h);
-        if ((da + de + di) == s && (da + d + g) == s && (b + de + h) == s && (c + f + di) == s)
-        {
-            println(da, " ", b, " ", c);
-            println(d, " ", de, " ", f);
-            println(g, " ", h, " ", di);
-            return 0;
-        }
+        ll n = readn();
+        ll k = readn();
+        ll x = readn();
+        solution(n, k, x);
     }
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/259/problem/B
+// https://codeforces.com/contest/1845/problem/A

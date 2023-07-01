@@ -1,4 +1,4 @@
-// http://github.com/ananthvk/codeforces-solutions
+// https://github.com/ananthvk/codeforces-solutions
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC optimize("Ofast,unroll-loops")
 #pragma GCC target("avx2,tune=native")
@@ -84,33 +84,48 @@ struct safe_hash { static uint64_t splitmix64(uint64_t x) { x += 0x9e3779b97f4a7
 // Solution from here
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
+bool path_exists(ll n, const vector<ll> &dirty)
+{
+    if (dirty.empty())
+    {
+        return true;
+    }
+    if (dirty.front() == 1)
+        return false;
+    if (dirty.back() == n)
+        return false;
+    if (dirty.size() <= 2)
+        return true;
+    ll m = dirty.size();
+    for (ll i = 2; i < m; ++i)
+    {
+        if (dirty[i] - dirty[i - 1] == 1 && dirty[i] - dirty[i - 2] == 2)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main()
 {
     FAST_IO
-    ll da = readn(); // Principal diagonal
-    ll b = readn();
-    ll c = readn();
-    ll d = readn();
-    ll de = readn(); // Principal diagonal
-    ll f = readn();
-    ll g = readn();
-    ll h = readn();
-    ll di = readn(); // Principal diagonal
-    FORS(i, 0, 100000 + 1, 1)
-    {
-        ll s = i + b + c;
-        da = i;
-        de = s - (d + f);
-        di = s - (g + h);
-        if ((da + de + di) == s && (da + d + g) == s && (b + de + h) == s && (c + f + di) == s)
-        {
-            println(da, " ", b, " ", c);
-            println(d, " ", de, " ", f);
-            println(g, " ", h, " ", di);
-            return 0;
-        }
-    }
+    // Solution:
+    // As per the problem statement, petya can jump to either the next stair, or skip one or two stairs
+    // Firstly sort the stairs in ascending order
+    // So there is no solution if there are 3 consecutive stairs which are dirty
+    // since petya cannot skip 3 stairs
+    // Also if either stair 1 or 10 is dirty, there is no path
+    // The goal is to find if there are 3 consecutive integers in the array
+    ll n = readn();
+    ll m = readn();
+    auto v = readvin(m);
+    sort(all(v));
+    if (path_exists(n, v))
+        println("YES");
+    else
+        println("NO");
     return 0;
 }
 // This is the solution for the problem from codeforces
-// https://codeforces.com/contest/259/problem/B
+// https://codeforces.com/contest/362/problem/B
